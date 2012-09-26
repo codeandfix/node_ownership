@@ -1,6 +1,10 @@
+-- load static configuration
+
+dofile(minetest.get_modpath("node_ownership").."/settings.lua")
+
+
 -- declare local variables
 
-_STATIC_grantor = "Serveradmin"
 minetest.register_privilege("griefing", {
       description = "Griefing Mode",
       give_to_singleplayer = true
