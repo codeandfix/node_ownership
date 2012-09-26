@@ -17,7 +17,9 @@ Node Ownership (node_ownership)
 ########################
 
 [1. Change ServerAdmin name in head of init.lua if you want]
+
 2. put init.lua into /minetest/games/minetest_game/mods/node_ownership/
+
 3. restart server
 
 
