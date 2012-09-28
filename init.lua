@@ -1,7 +1,7 @@
 -- load static configuration
 
 dofile(minetest.get_modpath("node_ownership").."/settings.lua")
-
+if _STATIC_DEBUG then print("node_ownership: DEBUG: true") end
 
 -- declare local variables
 
@@ -348,7 +348,7 @@ minetest.register_on_chat_message(function(name, message)
 			minetest.chat_send_player(name, 'usage: '..cmd..' playername startpos endpos')
 			return true -- Handled chat message
 		end
-print("WARNING: Please look inside code for comment to fix this soon "..name..ownername)  -- Problem: If the Playername is not online at the moment it wont set. this should be fixed. but dont remove the function because it protects against bad strings
+if _STATIC_DEBUG then print("WARNING: Please look inside code for comment to fix this soon "..name..ownername) end -- Problem: If the Playername is not online at the moment it wont set. this should be fixed. but dont remove the function because it protects against bad strings
 		local player = minetest.env:get_player_by_name(ownername)
 
 		if ownername == "Sandbox" then
@@ -378,6 +378,9 @@ print("WARNING: Please look inside code for comment to fix this soon "..name..ow
 		owner_defs[table.maxn(owner_defs)].id = table.maxn(owner_defs)
 		table_save( owner_defs, owners_db_filename )
 		
+		minetest.chat_send_player(ownername, "A concession has been granted to you! Type /list_areas to show your concessions.")
+		minetest.chat_send_player(name, "You granted "..ownername.." a concession successfully!")
+
 		return true -- Handled chat message
 	end
 	local cmd = "/add_owner"
@@ -441,6 +444,15 @@ print("WARNING: Please look inside code for comment to fix this soon "..name..ow
 						--OK, found entry that has both area_poss
 						if def.owner == name or minetest.check_player_privs(name, {privs=true}) then
 							p=def.id
+
+							if _STATIC_DEBUG then print ("DEBUG (add_owner): Owner ID is: "..def.id) end
+
+							if def.parent ~= nil then
+								p=nil --disallow child of childs
+								if _STATIC_DEBUG then print("DEBUG (add_owner): Owner Parent is: "..def.parent) end
+							else
+								print("DEBUG (add_owner): Unset Parent")
+							end
 							break
 						end
 					end
@@ -460,6 +472,9 @@ print("WARNING: Please look inside code for comment to fix this soon "..name..ow
 		owner_defs[table.maxn(owner_defs)].id = table.maxn(owner_defs)
 		table_save( owner_defs, owners_db_filename )
 		
+		minetest.chat_send_player(new_ownername, name.." granted you a subconcession!")
+		minetest.chat_send_player(name, "You granted "..new_ownername.." a subconcession successfully!")
+
 		return true -- Handled chat message
 	end
 	local cmd = "/list_areas"
