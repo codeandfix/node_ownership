@@ -260,7 +260,7 @@ function minetest.node_dig(pos, node, digger)
 		if HasOwner(pos) then
 
 			if not ( IsPlayerNodeOwner(pos, digger:get_player_name()) or IsPlayerNodeOwner(pos, "Sandbox") ) then
-			minetest.chat_send_player(digger:get_player_name(), "You need a concession to dig nodes here - Grantor: ".._STATIC_grantor.." - ".."Concessionaire: "..GetNodeOwnerName(pos).." (X"..pos.x.." Y"..pos.y.." Z"..pos.z..")")
+				minetest.chat_send_player(digger:get_player_name(), "You need a concession to dig nodes here - Grantor: ".._STATIC_grantor.." - ".."Concessionaire: "..GetNodeOwnerName(pos).." (X"..pos.x.." Y"..pos.y.." Z"..pos.z..")")
 				return
 			end
 		else
@@ -270,6 +270,29 @@ function minetest.node_dig(pos, node, digger)
 	end
 
 	old_node_dig(pos, node, digger)
+end
+
+local old_node_punch = minetest.node_punch
+function minetest.node_punch(pos, node, puncher)
+
+
+	if string.sub(node.name,1,17) == "mesecons_delayer:" then
+
+		if not minetest.check_player_privs(puncher:get_player_name(), {griefing=true}) then
+			if HasOwner(pos) then
+
+				if not ( IsPlayerNodeOwner(pos, puncher:get_player_name()) or IsPlayerNodeOwner(pos, "Sandbox") ) then
+					minetest.chat_send_player(puncher:get_player_name(), "You need a concession to punch this node here - Grantor: ".._STATIC_grantor.." - ".."Concessionaire: "..GetNodeOwnerName(pos).." (X"..pos.x.." Y"..pos.y.." Z"..pos.z..")")
+					return
+				end
+			else
+				minetest.chat_send_player(puncher:get_player_name(), "You need a concession to punch this node here - Grantor: ".._STATIC_grantor.." (X"..pos.x.." Y"..pos.y.." Z"..pos.z..")")
+				return
+			end		
+		end
+	end
+
+	old_node_punch(pos, node, puncher)
 end
 
 function CheckCollisions(pos1, pos2)
