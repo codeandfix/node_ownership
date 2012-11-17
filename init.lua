@@ -157,7 +157,7 @@ if type(owner_defs) ~= "table" then
 end
 
 function IsPlayerNodeOwner(pos, name)
-	r = true
+	r = false
 	for _,def in pairs(owner_defs) do
 		if pos.x >= def.x1 and pos.x <= def.x2 or
 			pos.x <= def.x1 and pos.x >= def.x2 then
@@ -183,7 +183,7 @@ end
 
 
 function GetNodeOwnerName(pos)
-	r = true
+	r = false
 	for _,def in pairs(owner_defs) do
 		if pos.x >= def.x1 and pos.x <= def.x2 or
 			pos.x <= def.x1 and pos.x >= def.x2 then
@@ -274,8 +274,7 @@ end
 
 local old_node_punch = minetest.node_punch
 function minetest.node_punch(pos, node, puncher)
-
-
+-- print (string.sub(node.name,1,17))
 	if string.sub(node.name,1,17) == "mesecons_delayer:" then
 
 		if not minetest.check_player_privs(puncher:get_player_name(), {griefing=true}) then
